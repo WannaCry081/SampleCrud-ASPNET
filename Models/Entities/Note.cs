@@ -10,6 +10,8 @@ public class Note : BaseEntity
     public int UserId { get; set; }
 
     public string Title { get; set; } = null!;
+
+    [Column(TypeName = "Text")]
     public string Content { get; set; } = null!;
 
     // Navigation Property
