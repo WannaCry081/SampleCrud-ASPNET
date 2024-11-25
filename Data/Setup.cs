@@ -25,6 +25,12 @@ public partial class DataContext
                 t.Key
             }).IsUnique();
 
+        modelBuilder.Entity<Note>(entity =>
+        {
+            entity.Property(e => e.Content)
+                .HasColumnType("Text");
+        });
+
         modelBuilder.Entity<Note>()
             .HasIndex(n => new
             {
