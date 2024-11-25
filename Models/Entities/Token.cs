@@ -14,5 +14,5 @@ public class Token : BaseEntity
     public DateTime Expiration { get; set; }
 
     // Navigation Property 
-    public ICollection<User> Users { get; set; } = [];
+    public User User { get; set; } = null!;
 }
