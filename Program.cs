@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using SampleCrud_ASPNET.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+ConfigureServices(builder.Services, builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,3 +27,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+{
+    #region Setup Database Connection
+    services.AddDbContext<DataContext>(
+        options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+    #endregion
+}
