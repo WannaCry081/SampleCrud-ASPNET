@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Converters;
 using SampleCrud_ASPNET.Data;
+using SampleCrud_ASPNET.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,5 +74,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     #region Configure Logging
     services.AddLogging();
+    #endregion
+
+    #region Services Configuration
+    services.AddScoped<IAuthService, AuthService>();
     #endregion
 }
