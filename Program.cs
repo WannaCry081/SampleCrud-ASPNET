@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SampleCrud_ASPNET.Data;
 
@@ -43,6 +44,15 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
+    #region Versioning Configuration
+    services.AddApiVersioning(options =>
+    {
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ReportApiVersions = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+    });
+    #endregion
+
     #region Setup Database Connection
     services.AddDbContext<DataContext>(
         options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
