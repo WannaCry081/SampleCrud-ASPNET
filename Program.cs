@@ -6,6 +6,8 @@ using SampleCrud_ASPNET.Data;
 using SampleCrud_ASPNET.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using SampleCrud_ASPNET.Models.Utils;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,6 +101,12 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             IssuerSigningKey = new SymmetricSecurityKey(Base64UrlEncoder.DecodeBytes(secret))
         };
     });
+    #endregion
+
+    #region JWT Data Binding
+    services.Configure<JWTSettings>(configuration.GetSection("JWT"));
+    services.AddSingleton(resolver =>
+        resolver.GetRequiredService<IOptions<JWTSettings>>().Value);
     #endregion
 
     #region Setup Database Connection
