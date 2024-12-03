@@ -109,6 +109,12 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         resolver.GetRequiredService<IOptions<JWTSettings>>().Value);
     #endregion
 
+    #region SMTP Data Binding
+    services.Configure<SMTPSettings>(configuration.GetSection("JWT"));
+    services.AddSingleton(resolver =>
+        resolver.GetRequiredService<IOptions<SMTPSettings>>().Value);
+    #endregion
+
     #region Setup Database Connection
     services.AddDbContext<DataContext>(
         options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
