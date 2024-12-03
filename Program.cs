@@ -58,6 +58,13 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
+    #region ModelState Validation Configuration
+    services.Configure<ApiBehaviorOptions>(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
+    #endregion
+
     #region Versioning Configuration
     services.AddApiVersioning(options =>
     {
