@@ -10,4 +10,6 @@ public static class Error
         NotFound,
         InternalServer
     }
+
+    public const string VALIDATION_ERROR = "Validation failed on one or more fields.";
 }
