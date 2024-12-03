@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Converters;
 using SampleCrud_ASPNET.Data;
 using SampleCrud_ASPNET.Services.Auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +73,31 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         options.AssumeDefaultVersionWhenUnspecified = true;
         options.ReportApiVersions = true;
         options.DefaultApiVersion = new ApiVersion(1, 0);
+    });
+    #endregion
+
+    #region Authentication Configuration
+    var jwt = configuration.GetSection("JWT");
+    var secret = jwt["Secret"];
+
+    services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwt["Issuer"],
+            ValidAudience = jwt["Audience"],
+            ClockSkew = TimeSpan.Zero,
+            IssuerSigningKey = new SymmetricSecurityKey(Base64UrlEncoder.DecodeBytes(secret))
+        };
     });
     #endregion
 
