@@ -1,6 +1,6 @@
 namespace SampleCrud_ASPNET.Services.Utils;
 
-public class PasswordUtil
+public static class PasswordUtil
 {
     public static string HashPassword(string password)
     {

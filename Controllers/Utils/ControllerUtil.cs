@@ -5,7 +5,7 @@ using SampleCrud_ASPNET.Models.Utils;
 
 namespace SampleCrud_ASPNET.Controllers.Utils;
 
-public class ControllerUtil
+public static class ControllerUtil
 {
     public static ApiResponse<T> ValidateState<T>(ModelStateDictionary modelState)
     {
