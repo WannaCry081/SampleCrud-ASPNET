@@ -68,11 +68,10 @@ public class AuthService(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            logger.LogError(ex, "");
+            logger.LogError(ex, "An unexpected error occurred in the register service.");
             return ApiResponse<AuthTokenDto>.ErrorResponse(
                 Error.ErrorType.InternalServer,
-                Error.CREATING_RESOURCE("User"),
-                details
+                Error.CREATING_RESOURCE("User")
             );
         }
     }
