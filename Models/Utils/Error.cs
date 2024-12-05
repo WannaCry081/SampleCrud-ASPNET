@@ -11,5 +11,6 @@ public static class Error
         InternalServer
     }
 
+    public const string BAD_REQUEST = "Request body is invalid or malformed.";
     public const string VALIDATION_ERROR = "Validation failed on one or more fields.";
 }
