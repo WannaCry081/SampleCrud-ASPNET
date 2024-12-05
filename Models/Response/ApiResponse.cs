@@ -28,7 +28,7 @@ public class ApiResponse<T>
     }
 
     public static ApiResponse<T> ErrorResponse(
-        ErrorType type, string message, Dictionary<string, string>? details)
+        ErrorType type, string message, Dictionary<string, string>? details = null)
     {
         return new ApiResponse<T>
         {
