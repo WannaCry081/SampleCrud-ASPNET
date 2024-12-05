@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using SampleCrud_ASPNET.Controllers.Utils;
 using SampleCrud_ASPNET.Models.Dtos.Auth;
@@ -33,8 +34,8 @@ public class AuthController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "");
-            return Problem();
+            logger.LogError(ex, "Unexpected error occurred during registering user details.");
+            return Problem("An internal server error occurred.");
         }
     }
 }
