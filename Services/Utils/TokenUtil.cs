@@ -29,7 +29,6 @@ public static class TokenUtil
         {
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Iss, jwt.Issuer),
-            new(JwtRegisteredClaimNames.Aud, jwt.Audience),
             new(JwtRegisteredClaimNames.Iat,
                 new DateTimeOffset(now).ToUnixTimeSeconds().ToString(),
                 ClaimValueTypes.Integer64),
