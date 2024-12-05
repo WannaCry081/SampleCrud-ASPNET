@@ -13,6 +13,7 @@ public static class Error
 
     public const string BAD_REQUEST = "Request body is invalid or malformed.";
     public const string VALIDATION_ERROR = "Validation failed on one or more fields.";
+    public const string PERMISSION_DENIED = "Access denied. You do not have the necessary permissions.";
 
     public static string CREATING_RESOURCE(string entity)
     {
