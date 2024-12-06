@@ -58,19 +58,26 @@ public class AuthService(
         }
     }
 
-            var token = new Token
+    public async Task<ApiResponse<AuthTokenDto>> LoginUserAsync(AuthLoginUserDto authLoginUser)
+    {
+        var details = new Dictionary<string, string>();
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            var user = await context.Users.Include(u => u.Tokens)
+                .FirstOrDefaultAsync(u => u.Email.Equals(authLoginUser.Email));
+
+            if (user is null || !PasswordUtil.VerifyPassword(
+                user.Password, authLoginUser.Password))
             {
-                Key = tokens.Refresh,
-                Expiration = DateTime.Now.AddDays(jwt.RefreshExpiry),
-                UserId = user.Id,
-                User = user
-            };
+                details.Add("user", "Invalid user credentials.");
+                return ApiResponse<AuthTokenDto>.ErrorResponse(
+                    Error.ErrorType.Unauthorized,
+                    Error.PERMISSION_DENIED,
+                    details);
+            }
 
-            await context.SaveChangesAsync();
-            user.Tokens.Add(token);
-
-            await context.Tokens.AddAsync(token);
-            await context.SaveChangesAsync();
+            var tokens = await CreateTokensAsync(user);
             await transaction.CommitAsync();
 
             return ApiResponse<AuthTokenDto>.SuccessResponse(
@@ -79,10 +86,10 @@ public class AuthService(
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            logger.LogError(ex, "An unexpected error occurred in the register service.");
+            logger.LogError(ex, "An unexpected error occurred in the login service.");
             return ApiResponse<AuthTokenDto>.ErrorResponse(
                 Error.ErrorType.InternalServer,
-                Error.CREATING_RESOURCE("User")
+                Error.CREATING_RESOURCE("Token")
             );
         }
     }
