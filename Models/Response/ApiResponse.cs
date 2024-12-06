@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using SampleCrud_ASPNET.Models.Dtos.Auth;
 using static SampleCrud_ASPNET.Models.Utils.Error;
 
 namespace SampleCrud_ASPNET.Models.Response;
@@ -37,5 +38,10 @@ public class ApiResponse<T>
             Message = message,
             Details = details
         };
+    }
+
+    internal static ApiResponse<AuthTokenDto> SuccessResponse(Task<AuthTokenDto> tokens, string uSER_AUTHENTICATED)
+    {
+        throw new NotImplementedException();
     }
 }
