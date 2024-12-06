@@ -38,4 +38,30 @@ public class AuthController(
             return Problem("An internal server error occurred.");
         }
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginUser([FromBody] AuthLoginUserDto authLoginUser)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ControllerUtil.ValidateState<object>(ModelState));
+            }
+
+            var response = await authService.LoginUserAsync(authLoginUser);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during logging in user credentials.");
+            return Problem("An internal server error occurred.");
+        }
+    }
 }
