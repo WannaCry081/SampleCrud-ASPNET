@@ -93,4 +93,29 @@ public class AuthService(
             );
         }
     }
+
+    private async Task<AuthTokenDto> CreateTokensAsync(User user)
+    {
+        var tokens = new AuthTokenDto
+        {
+            Refresh = TokenUtil.GenerateToken(user, jwt, TokenUtil.TokenType.REFRESH),
+            Access = TokenUtil.GenerateToken(user, jwt, TokenUtil.TokenType.ACCESS)
+        };
+
+        var token = new Token
+        {
+            Key = tokens.Refresh,
+            Expiration = DateTime.Now.AddDays(jwt.RefreshExpiry),
+            User = user,
+            UserId = user.Id
+        };
+
+        await context.Tokens.AddAsync(token);
+        await context.SaveChangesAsync();
+
+        user.Tokens.Add(token);
+        await context.SaveChangesAsync();
+
+        return tokens;
+    }
 }
