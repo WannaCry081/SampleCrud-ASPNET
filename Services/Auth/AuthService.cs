@@ -41,11 +41,22 @@ public class AuthService(
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
 
-            var tokens = new AuthTokenDto
-            {
-                Access = TokenUtil.GenerateToken(user, jwt, TokenUtil.TokenType.ACCESS),
-                Refresh = TokenUtil.GenerateToken(user, jwt, TokenUtil.TokenType.REFRESH)
-            };
+            var tokens = await CreateTokensAsync(user);
+            await transaction.CommitAsync();
+
+            return ApiResponse<AuthTokenDto>.SuccessResponse(
+                tokens, Success.USER_AUTHENTICATED);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            logger.LogError(ex, "An unexpected error occurred in the register service.");
+            return ApiResponse<AuthTokenDto>.ErrorResponse(
+                Error.ErrorType.InternalServer,
+                Error.CREATING_RESOURCE("User")
+            );
+        }
+    }
 
             var token = new Token
             {
