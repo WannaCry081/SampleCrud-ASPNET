@@ -29,3 +29,31 @@ jobs:
 
       - name: Build project
         run: dotnet build
+
+  notify:
+    needs: build
+    if: ${{ failure() }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_EMAIL }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "GitHub Workflow Failed: Build and Test .NET 8 WebAPI"
+          body: |
+            Hello,
+
+            The workflow 'Build and Test .NET 8 WebAPI' failed. Please check the logs here:
+            ${{ github.workflow }}: ${{ github.run_url }}
+
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+          to: "liraedata59@gmail.com"
+          from: ${{ secrets.SMTP_EMAIL }}
