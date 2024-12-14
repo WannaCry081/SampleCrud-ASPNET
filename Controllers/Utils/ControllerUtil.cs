@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SampleCrud_ASPNET.Models.Response;
@@ -7,6 +8,12 @@ namespace SampleCrud_ASPNET.Controllers.Utils;
 
 public static class ControllerUtil
 {
+    public static int GetUserId(ClaimsPrincipal user)
+    {
+        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(userId, out var id) ? id : -1;
+    }
+
     public static ApiResponse<T> ValidateState<T>(ModelStateDictionary modelState)
     {
         var details = modelState
