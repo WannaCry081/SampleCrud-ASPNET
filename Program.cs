@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SampleCrud_ASPNET.Models.Utils;
 using Microsoft.Extensions.Options;
+using SampleCrud_ASPNET.Services.Users;
+using JSerializer = System.Text.Json.JsonSerializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,6 +101,21 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             ValidAudience = jwt["Audience"],
             ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = new SymmetricSecurityKey(Base64UrlEncoder.DecodeBytes(secret))
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+
+                var response = JSerializer.Serialize(
+                    new { message = "Authentication token is missing or invalid." });
+                return context.Response.WriteAsync(response);
+            }
         };
     });
     #endregion
