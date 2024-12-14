@@ -8,11 +8,22 @@ using SampleCrud_ASPNET.Models.Utils;
 
 namespace SampleCrud_ASPNET.Services.Users;
 
-public class UserService(DataContext context) : IUserService
+public class UserService(DataContext context, IMapper mapper) : IUserService
 {
-    public Task<ApiResponse<UserDetailsDto>> GetUserDetailsAsync(int id)
+    public async Task<ApiResponse<UserDetailsDto>> GetUserDetailsAsync(int id)
     {
-        throw new NotImplementedException();
+        var user = await GetUserByIdAsync(id);
+
+        if (user is null)
+        {
+            return ApiResponse<UserDetailsDto>.ErrorResponse(
+                Error.ErrorType.Unauthorized,
+                Error.PERMISSION_DENIED
+            );
+        }
+
+        var userDetails = mapper.Map<UserDetailsDto>(user);
+        return ApiResponse<UserDetailsDto>.SuccessResponse(userDetails);
     }
 
     private async Task<User?> GetUserByIdAsync(int id)
@@ -20,5 +31,4 @@ public class UserService(DataContext context) : IUserService
         var user = await context.Users.FirstOrDefaultAsync(u => u.Id == id);
         return user;
     }
-
 }
