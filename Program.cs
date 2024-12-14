@@ -126,5 +126,6 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     #region Services Configuration
     services.AddScoped<IAuthService, AuthService>();
+    services.AddScoped<IUserService, UserService>();
     #endregion
 }
