@@ -10,6 +10,7 @@ using SampleCrud_ASPNET.Models.Utils;
 using Microsoft.Extensions.Options;
 using SampleCrud_ASPNET.Services.Users;
 using JSerializer = System.Text.Json.JsonSerializer;
+using SampleCrud_ASPNET.Services.Notes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -144,5 +145,6 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     #region Services Configuration
     services.AddScoped<IAuthService, AuthService>();
     services.AddScoped<IUserService, UserService>();
+    services.AddScoped<INoteService, NoteService>();
     #endregion
 }
