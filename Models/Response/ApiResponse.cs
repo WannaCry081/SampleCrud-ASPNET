@@ -18,7 +18,7 @@ public class ApiResponse<T>
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public Dictionary<string, string>? Details { get; init; }
 
-    public static ApiResponse<T> SuccessResponse(T? data, string message)
+    public static ApiResponse<T> SuccessResponse(T? data, string message = "")
     {
         return new ApiResponse<T>
         {
@@ -29,7 +29,7 @@ public class ApiResponse<T>
     }
 
     public static ApiResponse<T> ErrorResponse(
-        ErrorType type, string message, Dictionary<string, string>? details = null)
+        ErrorType type, string message = "", Dictionary<string, string>? details = null)
     {
         return new ApiResponse<T>
         {
