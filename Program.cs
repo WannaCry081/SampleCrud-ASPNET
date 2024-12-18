@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using SampleCrud_ASPNET.Services.Users;
 using JSerializer = System.Text.Json.JsonSerializer;
 using SampleCrud_ASPNET.Services.Notes;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,6 +80,43 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         options.AssumeDefaultVersionWhenUnspecified = true;
         options.ReportApiVersions = true;
         options.DefaultApiVersion = new ApiVersion(1, 0);
+    });
+    #endregion
+
+    #region Swagger Docs
+    services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "Note API",
+            Version = "1.0",
+            Description = "A simple Note API showcasing CRUD operation in ASP.NET WebAPI Core Framework."
+        });
+
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme {
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                []
+            }
+        });
+
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
     });
     #endregion
 
