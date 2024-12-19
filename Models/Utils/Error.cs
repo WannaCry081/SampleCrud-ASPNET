@@ -19,4 +19,9 @@ public static class Error
     {
         return $"Failed to create '{entity}' resource";
     }
+
+    public static string FETCHING_RESOURCE(string entity)
+    {
+        return $"Failed to fetch '{entity}' resource";
+    }
 }
