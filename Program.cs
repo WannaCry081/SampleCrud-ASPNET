@@ -10,6 +10,9 @@ using SampleCrud_ASPNET.Models.Utils;
 using Microsoft.Extensions.Options;
 using SampleCrud_ASPNET.Services.Users;
 using JSerializer = System.Text.Json.JsonSerializer;
+using SampleCrud_ASPNET.Services.Notes;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +83,43 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     });
     #endregion
 
+    #region Swagger Docs
+    services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "Note API",
+            Version = "1.0",
+            Description = "A simple Note API showcasing CRUD operation in ASP.NET WebAPI Core Framework."
+        });
+
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme {
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                []
+            }
+        });
+
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
+    });
+    #endregion
+
     #region Authentication Configuration
     var jwt = configuration.GetSection("JWT");
     var secret = jwt["Secret"];
@@ -144,5 +184,6 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     #region Services Configuration
     services.AddScoped<IAuthService, AuthService>();
     services.AddScoped<IUserService, UserService>();
+    services.AddScoped<INoteService, NoteService>();
     #endregion
 }

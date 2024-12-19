@@ -1,11 +1,169 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using SampleCrud_ASPNET.Services.Notes;
+using SampleCrud_ASPNET.Controllers.Utils;
+using SampleCrud_ASPNET.Models.Utils;
+using SampleCrud_ASPNET.Models.Dtos.Notes;
 
 namespace SampleCrud_ASPNET.Controllers;
 
+[Authorize]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/notes")]
-public class NoteController : ControllerBase
+public class NoteController(
+    ILogger<NoteController> logger,
+    INoteService noteService) : ControllerBase
 {
 
+    [HttpGet]
+    public async Task<IActionResult> RetrieveNotes()
+    {
+        try
+        {
+            var userId = ControllerUtil.GetUserId(User);
+
+            if (userId == -1)
+            {
+                return Unauthorized(new { message = Error.PERMISSION_DENIED });
+            }
+
+            var response = await noteService.ListAsync(userId);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during retrieving user notes.");
+            return Problem("An internal server error occurred.");
+        }
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> RetrieveNote([FromRoute] int id)
+    {
+        try
+        {
+            var userId = ControllerUtil.GetUserId(User);
+
+            if (userId == -1)
+            {
+                return Unauthorized(new { message = Error.PERMISSION_DENIED });
+            }
+
+            var response = await noteService.RetrieveAsync(userId, id);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during fetching user note.");
+            return Problem("An internal server error occurred.");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateNote([FromBody] CreateNoteDto createNote)
+    {
+        try
+        {
+            var userId = ControllerUtil.GetUserId(User);
+
+            if (userId == -1)
+            {
+                return Unauthorized(new { message = Error.PERMISSION_DENIED });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ControllerUtil.ValidateState<object>(ModelState));
+            }
+
+            var response = await noteService.CreateAsync(userId, createNote);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return StatusCode(201, response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during creating user note.");
+            return Problem("An internal server error occurred.");
+        }
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateNote(
+        [FromRoute] int id, [FromBody] UpdateNoteDto updateNote)
+    {
+        try
+        {
+            var userId = ControllerUtil.GetUserId(User);
+
+            if (userId == -1)
+            {
+                return Unauthorized(new { message = Error.PERMISSION_DENIED });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ControllerUtil.ValidateState<object>(ModelState));
+            }
+
+            var response = await noteService.UpdateAsync(userId, id, updateNote);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during updating user note.");
+            return Problem("An internal server error occurred.");
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DestroyNote([FromRoute] int id)
+    {
+        try
+        {
+            var userId = ControllerUtil.GetUserId(User);
+
+            if (userId == -1)
+            {
+                return Unauthorized(new { message = Error.PERMISSION_DENIED });
+            }
+
+            var response = await noteService.DestroyAsync(userId, id);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during deleting user note.");
+            return Problem("An internal server error occurred.");
+        }
+    }
 }
