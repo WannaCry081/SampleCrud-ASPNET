@@ -53,7 +53,7 @@ public class AuthService(
             logger.LogError(ex, "An unexpected error occurred in the register service.");
             return ApiResponse<AuthTokenDto>.ErrorResponse(
                 Error.ErrorType.InternalServer,
-                Error.CREATING_RESOURCE("User")
+                Error.CREATING_RESOURCE(nameof(User))
             );
         }
     }
@@ -89,7 +89,7 @@ public class AuthService(
             logger.LogError(ex, "An unexpected error occurred in the login service.");
             return ApiResponse<AuthTokenDto>.ErrorResponse(
                 Error.ErrorType.InternalServer,
-                Error.CREATING_RESOURCE("Token")
+                Error.CREATING_RESOURCE(nameof(Token))
             );
         }
     }
