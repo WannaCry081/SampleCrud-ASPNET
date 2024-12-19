@@ -17,7 +17,7 @@ public class NoteController(
 {
 
     [HttpGet]
-    public async Task<IActionResult> GetNotes()
+    public async Task<IActionResult> RetrieveNotes()
     {
         try
         {
@@ -45,7 +45,7 @@ public class NoteController(
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetNote([FromRoute] int id)
+    public async Task<IActionResult> RetrieveNote([FromRoute] int id)
     {
         try
         {
@@ -140,7 +140,7 @@ public class NoteController(
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteNote([FromRoute] int id)
+    public async Task<IActionResult> DestroyNote([FromRoute] int id)
     {
         try
         {
