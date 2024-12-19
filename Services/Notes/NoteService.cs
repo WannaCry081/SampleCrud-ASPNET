@@ -62,14 +62,24 @@ public class NoteService(
             mapper.Map<NoteDto>(note));
     }
 
-    public Task<ApiResponse<object?>> DeleteNoteAsync()
+    public async Task<ApiResponse<NoteDto>> UpdateAsync(int userId, int noteId, UpdateNoteDto updateNote)
     {
-        throw new NotImplementedException();
-    }
+        var note = await context.Notes
+            .SingleOrDefaultAsync(n => n.Id == noteId && n.UserId == userId);
 
-    public Task<ApiResponse<NoteDto>> GetNoteAsync()
-    {
-        throw new NotImplementedException();
+        if (note is null)
+        {
+            return ApiResponse<NoteDto>.ErrorResponse(
+                Error.ErrorType.NotFound,
+                Error.FETCHING_RESOURCE(nameof(Note))
+            );
+        }
+
+        mapper.Map(updateNote, note);
+        await context.SaveChangesAsync();
+
+        return ApiResponse<NoteDto>.SuccessResponse(
+            mapper.Map<NoteDto>(note));
     }
 
     public Task<ApiResponse<List<NoteDto>>> GetNotesAsync()
