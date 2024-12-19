@@ -105,10 +105,38 @@ public class NoteController(
         }
     }
 
-    [HttpPut("{id}")]
-    public Task<IActionResult> UpdateNote()
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateNote(
+        [FromRoute] int id, [FromBody] UpdateNoteDto updateNote)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var userId = ControllerUtil.GetUserId(User);
+
+            if (userId == -1)
+            {
+                return Unauthorized(new { message = Error.PERMISSION_DENIED });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ControllerUtil.ValidateState<object>(ModelState));
+            }
+
+            var response = await noteService.UpdateAsync(userId, id, updateNote);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during updating user note.");
+            return Problem("An internal server error occurred.");
+        }
     }
 
     [HttpDelete("{id}")]
