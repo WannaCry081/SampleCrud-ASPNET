@@ -82,13 +82,22 @@ public class NoteService(
             mapper.Map<NoteDto>(note));
     }
 
-    public Task<ApiResponse<List<NoteDto>>> GetNotesAsync()
+    public async Task<ApiResponse<object?>> DestroyAsync(int userId, int noteId)
     {
-        throw new NotImplementedException();
-    }
+        var note = await context.Notes
+            .SingleOrDefaultAsync(n => n.Id == noteId && n.UserId == userId);
 
-    public Task<ApiResponse<NoteDto>> UpdateNoteAsync()
-    {
-        throw new NotImplementedException();
+        if (note is null)
+        {
+            return ApiResponse<object?>.ErrorResponse(
+                Error.ErrorType.BadRequest,
+                Error.BAD_REQUEST
+            );
+        }
+
+        context.Notes.Remove(note);
+        await context.SaveChangesAsync();
+
+        return ApiResponse<object?>.SuccessResponse(null);
     }
 }

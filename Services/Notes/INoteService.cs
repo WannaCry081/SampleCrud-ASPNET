@@ -9,5 +9,5 @@ public interface INoteService
     Task<ApiResponse<NoteDto>> RetrieveAsync(int userId, int noteId);
     Task<ApiResponse<NoteDto>> CreateAsync(int userId, CreateNoteDto createNote);
     Task<ApiResponse<NoteDto>> UpdateAsync(int userId, int noteId, UpdateNoteDto updateNote);
-    Task<ApiResponse<object?>> DeleteNoteAsync();
+    Task<ApiResponse<object?>> DestroyAsync(int userId, int noteId);
 }
