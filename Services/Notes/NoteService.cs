@@ -14,6 +14,23 @@ public class NoteService(
     DataContext context,
     IUserService userService) : INoteService
 {
+    public async Task<ApiResponse<NoteDto>> RetrieveAsync(int userId, int noteId)
+    {
+        var note = await context.Notes
+            .SingleOrDefaultAsync(n => n.Id == noteId && n.UserId == userId);
+
+        if (note is null)
+        {
+            return ApiResponse<NoteDto>.ErrorResponse(
+                Error.ErrorType.NotFound,
+                Error.FETCHING_RESOURCE(nameof(Note))
+            );
+        }
+
+        return ApiResponse<NoteDto>.SuccessResponse(
+            mapper.Map<NoteDto>(note));
+    }
+
     public async Task<ApiResponse<NoteDto>> CreateAsync(int userId, CreateNoteDto createNote)
     {
         var user = await userService.GetUserByIdAsync(userId);

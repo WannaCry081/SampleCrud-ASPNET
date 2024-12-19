@@ -6,7 +6,7 @@ namespace SampleCrud_ASPNET.Services.Notes;
 public interface INoteService
 {
     Task<ApiResponse<List<NoteDto>>> GetNotesAsync();
-    Task<ApiResponse<NoteDto>> GetNoteAsync();
+    Task<ApiResponse<NoteDto>> RetrieveAsync(int userId, int noteId);
     Task<ApiResponse<NoteDto>> CreateAsync(int userId, CreateNoteDto createNote);
     Task<ApiResponse<NoteDto>> UpdateNoteAsync();
     Task<ApiResponse<object?>> DeleteNoteAsync();
