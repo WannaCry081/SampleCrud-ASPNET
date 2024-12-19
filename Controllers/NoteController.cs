@@ -73,9 +73,36 @@ public class NoteController(
     }
 
     [HttpPost]
-    public Task<IActionResult> CreateNote()
+    public async Task<IActionResult> CreateNote([FromBody] CreateNoteDto createNote)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var userId = ControllerUtil.GetUserId(User);
+
+            if (userId == -1)
+            {
+                return Unauthorized(new { message = Error.PERMISSION_DENIED });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ControllerUtil.ValidateState<object>(ModelState));
+            }
+
+            var response = await noteService.CreateAsync(userId, createNote);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return StatusCode(201, response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during creating user note.");
+            return Problem("An internal server error occurred.");
+        }
     }
 
     [HttpPut("{id}")]
