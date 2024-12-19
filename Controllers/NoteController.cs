@@ -139,9 +139,31 @@ public class NoteController(
         }
     }
 
-    [HttpDelete("{id}")]
-    public Task<IActionResult> DeleteNote()
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteNote([FromRoute] int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var userId = ControllerUtil.GetUserId(User);
+
+            if (userId == -1)
+            {
+                return Unauthorized(new { message = Error.PERMISSION_DENIED });
+            }
+
+            var response = await noteService.DestroyAsync(userId, id);
+
+            if (!response.Success)
+            {
+                return ControllerUtil.GetErrorActionResult(response);
+            }
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred during deleting user note.");
+            return Problem("An internal server error occurred.");
+        }
     }
 }
