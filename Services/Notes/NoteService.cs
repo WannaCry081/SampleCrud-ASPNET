@@ -31,6 +31,16 @@ public class NoteService(
             mapper.Map<NoteDto>(note));
     }
 
+    public async Task<ApiResponse<List<NoteDto>>> ListAsync(int userId)
+    {
+        var notes = await context.Notes
+            .Where(n => n.UserId == userId)
+            .ToListAsync();
+
+        return ApiResponse<List<NoteDto>>.SuccessResponse(
+            mapper.Map<List<NoteDto>>(notes));
+    }
+
     public async Task<ApiResponse<NoteDto>> CreateAsync(int userId, CreateNoteDto createNote)
     {
         var user = await userService.GetUserByIdAsync(userId);
