@@ -1,5 +1,8 @@
 namespace SampleCrud_ASPNET.Models.Dtos.Notes;
 
+/// <summary>
+///   DTO for a note details.
+/// </summary>
 public class NoteDto
 {
     public int Id { get; init; }
