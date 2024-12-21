@@ -9,6 +9,8 @@ This project demonstrates a CRUD (Create, Read, Update, Delete) application deve
 - **Swagger**: Integrated Swagger for API documentation and testing.
 - **Dependency Injection**: Follows best practices for dependency injection.
 - **Error Handling**: Implements global error handling and logging.
+- **User Authentication**: Secure user authentication with endpoints for login and registration.
+- **User Information**: Retrieve authenticated user information using `/users/me`.
 
 ## 🛠️ Technologies
 
@@ -67,9 +69,12 @@ After starting the application, you can access the following features:
 
 - **Create Entity**: Add a new entity by sending a POST request to `/api/v1/notes` with the necessary data.
 - **Read Entities**: Retrieve a list of entities by sending a GET request to `/api/v1/notes`.
-- **Read Entity by ID**: Retrieve a specific entity by sending a GET request to `/api/v1notes/{id}`.
+- **Read Entity by ID**: Retrieve a specific entity by sending a GET request to `/api/v1/notes/{id}`.
 - **Update Entity**: Update an existing entity by sending a PUT request to `/api/v1/notes/{id}` with the updated data.
 - **Delete Entity**: Delete an entity by sending a DELETE request to `/api/v1/notes/{id}`.
+- **User Registration**: Register a new user by sending a POST request to `/register` with the necessary data.
+- **User Login**: Authenticate a user by sending a POST request to `/login` with the necessary credentials.
+- **Get User Info**: Retrieve authenticated user information by sending a GET request to `/users/me`.
 
 Each endpoint ensures secure handling of data and follows RESTful principles.
 
