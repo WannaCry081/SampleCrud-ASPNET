@@ -9,6 +9,7 @@ using SampleCrud_ASPNET.Services.Utils;
 
 namespace SampleCrud_ASPNET.Services.Auth;
 
+/// <Inheritdoc />
 public class AuthService(
     IMapper mapper,
     DataContext context,
