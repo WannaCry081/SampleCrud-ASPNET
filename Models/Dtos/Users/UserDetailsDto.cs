@@ -1,5 +1,8 @@
 namespace SampleCrud_ASPNET.Models.Dtos.Users;
 
+/// <summary>
+///    DTO for user details.
+/// </summary>
 public class UserDetailsDto
 {
     public string UserName { get; init; } = null!;
