@@ -8,6 +8,7 @@ using SampleCrud_ASPNET.Models.Utils;
 
 namespace SampleCrud_ASPNET.Services.Users;
 
+/// <Inheritdoc />
 public class UserService(DataContext context, IMapper mapper) : IUserService
 {
     public async Task<ApiResponse<UserDetailsDto>> GetUserDetailsAsync(int id)

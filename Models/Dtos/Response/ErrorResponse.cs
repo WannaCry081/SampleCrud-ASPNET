@@ -2,6 +2,9 @@ using static SampleCrud_ASPNET.Models.Utils.Error;
 
 namespace SampleCrud_ASPNET.Models.Dtos.Response;
 
+/// <summary>
+///     DTO for error response.
+/// </summary>
 public class ErrorResponse
 {
     public bool Success { get; init; } = false;

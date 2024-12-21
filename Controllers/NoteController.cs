@@ -4,6 +4,7 @@ using SampleCrud_ASPNET.Services.Notes;
 using SampleCrud_ASPNET.Controllers.Utils;
 using SampleCrud_ASPNET.Models.Utils;
 using SampleCrud_ASPNET.Models.Dtos.Notes;
+using SampleCrud_ASPNET.Models.Dtos.Response;
 
 namespace SampleCrud_ASPNET.Controllers;
 
@@ -15,8 +16,25 @@ public class NoteController(
     ILogger<NoteController> logger,
     INoteService noteService) : ControllerBase
 {
-
+    /// <summary>
+    ///     Retrieve all notes of the authenticated user.
+    /// </summary>
+    /// <returns>
+    ///     Returns an <see cref="IActionResult" /> containing:
+    ///     - <see cref="OkObjectResult"/> if the notes are successfully retrieved.
+    ///     - <see cref="UnauthorizedObjectResult"/> if the user is not authenticated.
+    ///     - <see cref="ProblemDetails" /> if an unexpected error occurred.
+    /// </returns>
+    /// <response code="200">Returns the notes of the authenticated user.</response>
+    /// <response code="401">Bad request.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpGet]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK,
+        Type = typeof(SuccessResponse<NoteDto>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized,
+        Type = typeof(ErrorResponse))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RetrieveNotes()
     {
         try
@@ -72,7 +90,31 @@ public class NoteController(
         }
     }
 
+    /// <summary>
+    ///    Create a new note for the authenticated user.
+    /// </summary>
+    /// <param name="createNote"></param>
+    /// <returns>
+    ///     Returns an <see cref="IActionResult" /> containing:
+    ///     - <see cref="StatusCodeResult"/> if the note is successfully created.
+    ///     - <see cref="BadRequestObjectResult"/> if the request is invalid.
+    ///     - <see cref="UnauthorizedObjectResult"/> if the user is not authenticated.
+    ///     - <see cref="ProblemDetails" /> if an unexpected error occurred.
+    /// </returns>
+    /// <response code="201">Returns the created note.</response>
+    /// <response code="400">Bad request.</response>
+    /// <response code="401">Unauthorized access.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpPost]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status201Created,
+        Type = typeof(SuccessResponse<NoteDto>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest,
+        Type = typeof(ErrorResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized,
+        Type = typeof(ErrorResponse))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateNote([FromBody] CreateNoteDto createNote)
     {
         try
@@ -96,7 +138,7 @@ public class NoteController(
                 return ControllerUtil.GetErrorActionResult(response);
             }
 
-            return StatusCode(201, response);
+            return StatusCode(StatusCodes.Status201Created, response);
         }
         catch (Exception ex)
         {
@@ -105,7 +147,32 @@ public class NoteController(
         }
     }
 
+    /// <summary>
+    ///    Update an existing note of the authenticated user.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="updateNote"></param>
+    /// <returns>
+    ///     Returns an <see cref="IActionResult" /> containing:
+    ///     - <see cref="OkObjectResult"/> if the note is successfully updated. 
+    ///     - <see cref="BadRequestObjectResult"/> if the request is invalid.
+    ///     - <see cref="UnauthorizedObjectResult"/> if the user is not authenticated.
+    ///     - <see cref="ProblemDetails" /> if an unexpected error occurred.
+    /// </returns>
+    /// <response code="200">Returns the updated note.</response>
+    /// <response code="400">Bad request.</response>
+    /// <response code="401">Unauthorized access.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpPut("{id:int}")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK,
+        Type = typeof(SuccessResponse<NoteDto>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest,
+        Type = typeof(ErrorResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized,
+        Type = typeof(ErrorResponse))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateNote(
         [FromRoute] int id, [FromBody] UpdateNoteDto updateNote)
     {
@@ -139,7 +206,24 @@ public class NoteController(
         }
     }
 
+    /// <summary>
+    ///     Delete an existing note of the authenticated user.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>
+    ///     Returns an <see cref="IActionResult" /> containing:
+    ///     - <see cref="NoContentResult"/> if the note is successfully deleted.
+    ///     - <see cref="UnauthorizedObjectResult"/> if the user is not authenticated.
+    ///     - <see cref="ProblemDetails" /> if an unexpected error occurred.
+    /// </returns>
+    /// <response code="204">Returns no content.</response>
+    /// <response code="401">Unauthorized access.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized,
+        Type = typeof(ErrorResponse))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DestroyNote([FromRoute] int id)
     {
         try
