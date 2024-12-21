@@ -33,7 +33,7 @@ This project demonstrates a CRUD (Create, Read, Update, Delete) application deve
   ```json
   {
     "ConnectionStrings": {
-     "DefaultConnection": "Your Connection String Here"
+      "DefaultConnection": "Your Connection String Here"
     }
   }
   ```
@@ -51,17 +51,17 @@ This project demonstrates a CRUD (Create, Read, Update, Delete) application deve
   docker compose --env-file=./.env up
   ```
 
-  The application should now be running at [http://localhost:5000/](http://localhost:5000/swagger/index.html)
+The application should now be running at [http://localhost:8080/](http://localhost:8080/swagger/index.html)
 
 5. Create a `.env` file in the root directory to configure environment variables for `docker-compose.yml`. Below is a sample template for your `.env` or check out the `.env.example` file:
 
-  ```
-  # Application Base URL
-  APPLICATION_URL="http://localhost:5000"
+```
+# Application Base URL
+APPLICATION_URL="http://localhost:8080"
 
-  # Database connection string
-  DEFAULT_CONNECTION="YourDatabaseConnectionStringHere"
-  ```
+# Database connection string
+DEFAULT_CONNECTION="YourDatabaseConnectionStringHere"
+```
 
 ## 📖 Usage
 
@@ -84,17 +84,23 @@ If you'd like to contribute to this project, please follow these guidelines:
 
 1. Fork the repository.
 2. Create a new branch for your feature:
-  ```bash
-  git checkout -b feature/YourFeature
-  ```
+
+```bash
+git checkout -b feature/YourFeature
+```
+
 3. Commit your changes:
-  ```bash
-  git commit -am 'feat: add new feature'
-  ```
+
+```bash
+git commit -am 'feat: add new feature'
+```
+
 4. Push to the branch:
-  ```bash
-  git push origin feature/YourFeature
-  ```
+
+```bash
+git push origin feature/YourFeature
+```
+
 5. Create a new Pull Request for review.
 
 > [!NOTE]
