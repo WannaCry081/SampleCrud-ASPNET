@@ -9,6 +9,7 @@ using SampleCrud_ASPNET.Services.Users;
 
 namespace SampleCrud_ASPNET.Services.Notes;
 
+/// <Inheritdoc />
 public class NoteService(
     IMapper mapper,
     DataContext context,
