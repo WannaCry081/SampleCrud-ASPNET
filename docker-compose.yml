@@ -1,0 +1,46 @@
+name: Sample CRUD Project
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: database
+    hostname: database
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "MyStrongPass123"
+      MSSQL_PID: "Evaluation"
+    networks:
+      - app-network
+    restart: always
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: ${DEFAULT_CONNECTION}
+      JWT__Secret: ${JWT_SECRET}
+      JWT__Issuer: ${JWT_ISSUER}
+      JWT__Audience: ${JWT_AUDIENCE}
+      JWT__AccessExpiry: ${JWT_ACCESS_EXPIRY}
+      JWT__RefreshExpiry: ${JWT_REFRESH_EXPIRY}
+      JWT__ResetPasswordExpiry: ${JWT_RESET_PASSWORD_EXPIRY}
+      SMTP__Server: "smtp.gmail.com"
+      SMTP__Port: 587
+      SMTP__Email: ${SMTP_EMAIL}
+      SMTP__Password: ${SMTP_PASSWORD}
+      Application__Url: ${APPLICATION_URL}
+    depends_on:
+      - db
+    networks:
+      - app-network
+    restart: always
+
+networks:
+  app-network:
